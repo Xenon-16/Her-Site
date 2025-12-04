@@ -1,0 +1,235 @@
+$small-bp: 640px;
+$large-bp: 840px;
+
+$ui-opacity: 0.5;
+$ui-color: rgba(#fff, $ui-opacity);
+$font: 'Outfit', sans-serif;
+$letter-spacing: 0.06em;
+
+* {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.fireworks-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    overflow: hidden;
+    z-index: 9999;
+    color: $ui-color;
+    font-family: $font;
+    line-height: 1.25;
+    letter-spacing: $letter-spacing;
+}
+
+.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.remove {
+    display: none !important;
+}
+
+.blur {
+    filter: blur(12px);
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-init {
+    width: 100%;
+    align-self: center;
+    text-align: center;
+    text-transform: uppercase;
+
+    &__header {
+        font-size: 2.2em;
+    }
+
+    &__status {
+        margin-top: 1em;
+        font-size: 0.8em;
+        opacity: 0.75;
+    }
+}
+
+.stage-container {
+    overflow: hidden;
+    box-sizing: initial;
+    border: 1px solid #222;
+    margin: -1px;
+    width: 100vw;
+    height: 100vh;
+
+    @media (max-width: $large-bp) {
+        border: none;
+        margin: 0;
+    }
+}
+
+.canvas-container {
+    width: 100%;
+    height: 100%;
+    transition: filter 0.3s;
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        mix-blend-mode: lighten;
+        transform: translateZ(0);
+    }
+}
+
+.controls {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 10;
+
+    @media (min-width: $large-bp) {
+        visibility: visible;
+
+        &.hide:hover {
+            opacity: 1;
+        }
+    }
+}
+
+.menu {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 20;
+
+    &__inner-wrap {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transition: opacity 0.3s;
+    }
+
+    &__header {
+        margin-top: auto;
+        margin-bottom: 8px;
+        padding-top: 16px;
+        font-size: 2em;
+        text-transform: uppercase;
+    }
+
+    &__subheader {
+        margin-bottom: auto;
+        padding-bottom: 12px;
+        font-size: 0.86em;
+        opacity: 0.8;
+    }
+
+    form {
+        width: 100%;
+        max-width: 400px;
+        padding: 0 10px;
+        overflow: auto;
+    }
+
+    .form-option {
+        display: flex;
+        align-items: center;
+        margin: 16px 0;
+        transition: opacity 0.3s;
+
+        label {
+            display: block;
+            width: 50%;
+            padding-right: 12px;
+            text-align: right;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        &--select {
+            select {
+                display: block;
+                width: 50%;
+                height: 30px;
+                font-size: 1rem;
+                font-family: $font;
+                color: $ui-color;
+                letter-spacing: $letter-spacing;
+                background-color: transparent;
+                border: 1px solid $ui-color;
+
+                option {
+                    background-color: black;
+                }
+            }
+        }
+
+        &--checkbox {
+            input {
+                display: block;
+                width: 26px;
+                height: 26px;
+                margin: 0;
+                opacity: $ui-opacity;
+            }
+        }
+    }
+}
+
+.close-menu-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.btn {
+    $size: 50px;
+    opacity: 0.16;
+    width: $size;
+    height: $size;
+    display: flex;
+    user-select: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
+
+    &--bright {
+        opacity: 0.5;
+    }
+
+    &:hover {
+        opacity: 0.32;
+    }
+
+    &--bright:hover {
+        opacity: 0.75;
+    }
+
+    svg {
+        display: block;
+        margin: auto;
+    }
+}

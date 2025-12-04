@@ -1,0 +1,181 @@
+@use "sass:color";
+
+$bg: #f4f5fb;
+
+.cake-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+}
+
+.cake {
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    left: 10%;
+    bottom: 15%;
+}
+
+.filling {
+    height: 10px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+}
+
+.tier {
+    position: absolute;
+    left: 10%;
+    width: 80%;
+    height: 50px;
+    border-radius: 5px;
+
+    .icing-group {
+        position: absolute;
+        width: 100%;
+        height: 30px;
+        overflow: hidden;
+
+        .icing {
+            position: absolute;
+            border-radius: 0 0 20px 20px;
+            width: 40px;
+            height: 20px;
+            background-color: $bg;
+        }
+    }
+
+    &:after {
+        content: "";
+        position: absolute;
+        border-radius: 0 5px 5px 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+}
+
+.tier-1 {
+    background-color: #f2abe7;
+    bottom: 0;
+
+    .filling {
+        background-color: color.adjust(#f2abe7, $lightness: -10%);
+    }
+}
+
+.tier-2 {
+    bottom: 50px;
+    width: 60%;
+    height: 45px;
+    left: 20%;
+    background-color: #9fa3ec;
+
+    .filling {
+        background-color: color.adjust(#9fa3ec, $lightness: -10%);
+    }
+}
+
+.tier-3 {
+    bottom: 95px;
+    width: 40%;
+    height: 40px;
+    left: 30%;
+    background-color: #86d2e1;
+
+    .filling {
+        background-color: color.adjust(#86d2e1, $lightness: -10%);
+    }
+}
+
+// Icing positioning
+.icing:nth-child(1) {
+    left: -20px;
+}
+
+.icing:nth-child(2) {
+    left: 10px;
+}
+
+.icing:nth-child(3) {
+    left: 40px;
+}
+
+.icing:nth-child(4) {
+    left: 70px;
+}
+
+.icing:nth-child(5) {
+    left: 100px;
+}
+
+.icing:nth-child(6) {
+    left: 130px;
+}
+
+.icing:nth-child(7) {
+    left: 160px;
+}
+
+.icing:nth-child(8) {
+    left: 190px;
+}
+
+.icing:nth-child(9) {
+    left: 220px;
+}
+
+.candles {
+    position: absolute;
+    width: 40%;
+    left: 30%;
+    height: 30px;
+    bottom: 135px;
+
+    .candle {
+        position: absolute;
+        background-color: #f2abe7;
+        left: 27px;
+        width: 10px;
+        height: 25px;
+        bottom: 0;
+
+        &:after {
+            content: "";
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .flame {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            bottom: 30px;
+            left: -3px;
+
+            .flame-in {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background-color: #fec31e;
+                border-radius: 0 50% 50%;
+                transform: rotate(45deg);
+                animation: flame 2s linear infinite;
+            }
+        }
+    }
+}
+
+@keyframes flame {
+    50% {
+        transform: scale(0.8) rotate(45deg);
+    }
+}

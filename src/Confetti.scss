@@ -1,0 +1,52 @@
+@use "sass:math";
+
+.confetti {
+    position: absolute;
+    z-index: 999;
+}
+
+.confetti .rotate {
+    animation: driftRotate 1s infinite both ease-in-out;
+    width: 100%;
+    height: 100%;
+}
+
+.confetti .askew {
+    width: 100%;
+    height: 100%;
+    animation: drift 1s infinite alternate both ease-in-out;
+}
+
+@for $i from 0 to 200 {
+    .confetti:nth-child(#{$i}) .askew {
+        $time: 1s + math.random(100)*.01s;
+        animation-duration: $time;
+        animation-delay: -$time*math.random(100)*.01;
+    }
+
+    .confetti:nth-child(#{$i}) .rotate {
+        $time: 1s + math.random(100)*.01s;
+        animation-duration: $time;
+        animation-delay: -$time*math.random(100)*.01;
+    }
+}
+
+@keyframes drift {
+    0% {
+        transform: skewY(10deg) translate3d(-250%, 0, 0);
+    }
+
+    100% {
+        transform: skewY(-10deg) translate3d(250%, 0, 0);
+    }
+}
+
+@keyframes driftRotate {
+    0% {
+        transform: rotateX(0);
+    }
+
+    100% {
+        transform: rotateX(360deg);
+    }
+}
