@@ -74,7 +74,7 @@ function Confetti() {
         <div
             ref={containerRef}
             style={{
-                position: 'fixed',
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 width: '100%',

@@ -1,0 +1,184 @@
+.night-sky-con {
+    width: 100%;
+    background: linear-gradient(to bottom, #020202, #0a0a0a);
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.blessing-text-container {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    width: 80%;
+    color: #e0e0e0;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.blessing-intro {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    opacity: 0.9;
+    color: #b0c4de;
+    /* Light Steel Blue */
+}
+
+.blessing-timer {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #fff, #f0f8ff, #fff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shine 3s infinite linear;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.typing-text-container {
+    position: absolute;
+    top: 65%;
+    /* Positioned below the moon */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    text-align: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.typing-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    color: #fff;
+    white-space: pre-wrap;
+    /* Preserves newlines */
+    line-height: 1.6;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    opacity: 0.9;
+}
+
+@keyframes shine {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+// Shooting stars
+@for $i from 1 through 4 {
+    .shoot:nth-child(#{$i}) {
+        width: 5px;
+        height: 5px;
+        background: #fff;
+        box-shadow: 0px 1px 30px 0px rgba(255, 255, 255, 1);
+        z-index: 2;
+        position: absolute;
+        border-radius: 50%;
+        margin-left: -1040px;
+        animation: shoot-#{$i} #{random(4) + 1}s linear infinite;
+        animation-delay: $i * 0.5s;
+    }
+
+    @keyframes shoot-#{$i} {
+        0% {
+            margin-left: 0px;
+            margin-top: 100px;
+            width: 8px;
+            height: 8px;
+            opacity: 1;
+        }
+
+        100% {
+            margin-left: 900px;
+            margin-top: #{150 + random(40)}px;
+            width: 0px;
+            height: 0px;
+            opacity: 0;
+        }
+    }
+}
+
+// Moon Image
+.moon-image-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 300px;
+    height: 300px;
+    animation: floatMoon 6s ease-in-out infinite;
+    mix-blend-mode: screen;
+    /* Blends black background of the image */
+}
+
+.moon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Removed drop-shadow as it might interfere with blending, added mask for soft edges if needed */
+    mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+}
+
+@keyframes floatMoon {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) translateY(-20px);
+    }
+}
+
+// Stars
+.stars {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-top: 0px;
+    position: relative;
+}
+
+@for $i from 0 through 200 {
+    .star:nth-child(#{$i}) {
+        $d: random(2);
+        width: #{$d}px;
+        height: #{$d}px;
+        z-index: 1;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        opacity: 1;
+        margin-left: #{random(100)}vw;
+        margin-top: #{random(100)}vh;
+        animation: twinkle-#{$i} 1s linear infinite;
+        animation-delay: $i * 0.01s;
+    }
+
+    @keyframes twinkle-#{$i} {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0.3;
+        }
+    }
+}
