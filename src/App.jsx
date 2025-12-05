@@ -6,6 +6,8 @@ import FireworksDisplay from './Fireworks';
 import Confetti from './Confetti';
 import NightSky from './components/NightSky';
 
+import bgMusic from './assets/bg-music.mp3';
+
 function App() {
   const birthDate = new Date("2025-12-15T00:00:00+0530");
   const [timeLeft, setTimeLeft] = useState({});
@@ -13,6 +15,30 @@ function App() {
   const [showSurprise, setShowSurprise] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const audioRef = useState(null);
+
+  useEffect(() => {
+    const audio = new Audio(bgMusic);
+    audio.loop = true;
+    audio.volume = 0.5;
+
+    const playAudio = () => {
+      audio.play().catch(e => console.log("Audio play failed:", e));
+    };
+
+    // Try to play immediately
+    playAudio();
+
+    // Also play on any user interaction
+    document.addEventListener('click', playAudio, { once: true });
+    document.addEventListener('scroll', playAudio, { once: true });
+
+    return () => {
+      audio.pause();
+      document.removeEventListener('click', playAudio);
+      document.removeEventListener('scroll', playAudio);
+    };
+  }, []);
 
   useEffect(() => {
     const tick = setInterval(() => {
