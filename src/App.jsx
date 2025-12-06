@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './App.css';
 import Cake from './Cake';
 import GiftBox from './GiftBox';
 import FireworksDisplay from './Fireworks';
 import Confetti from './Confetti';
 import NightSky from './components/NightSky';
+import WordleGame from './components/WordleGame';
 
 import bgMusic from './assets/bg-music.mp3';
 
@@ -15,30 +16,27 @@ function App() {
   const [showSurprise, setShowSurprise] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const audioRef = useState(null);
+  const [showWordle, setShowWordle] = useState(false);
+  const audioRef = useRef(null);
 
   useEffect(() => {
-    const audio = new Audio(bgMusic);
-    audio.loop = true;
-    audio.volume = 0.5;
-
-    const playAudio = () => {
-      audio.play().catch(e => console.log("Audio play failed:", e));
-    };
-
-    // Try to play immediately
-    playAudio();
-
-    // Also play on any user interaction
-    document.addEventListener('click', playAudio, { once: true });
-    document.addEventListener('scroll', playAudio, { once: true });
+    audioRef.current = new Audio(bgMusic);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.5;
 
     return () => {
-      audio.pause();
-      document.removeEventListener('click', playAudio);
-      document.removeEventListener('scroll', playAudio);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (isGiftOpen && audioRef.current) {
+      audioRef.current.play().catch(e => console.log("Audio play failed:", e));
+    }
+  }, [isGiftOpen]);
 
   useEffect(() => {
     const tick = setInterval(() => {
@@ -94,6 +92,10 @@ function App() {
 
   if (showSurprise) {
     return <FireworksDisplay />;
+  }
+
+  if (showWordle) {
+    return <WordleGame onBack={() => setShowWordle(false)} />;
   }
 
   // Calculate styles based on scrollProgress
@@ -156,6 +158,40 @@ function App() {
                 </div>
               </>
             )}
+
+            <button
+              className="play-wordle-btn"
+              onClick={() => {
+                setIsTransitioning(true);
+                setTimeout(() => {
+                  setShowWordle(true);
+                  setIsTransitioning(false);
+                }, 1000);
+              }}
+              style={{
+                marginTop: '20px',
+                background: '#ff1493',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '24px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 4px 15px rgba(255, 20, 147, 0.3)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 6px 20px rgba(255, 20, 147, 0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 15px rgba(255, 20, 147, 0.3)';
+              }}
+            >
+              lets play a game ✨
+            </button>
           </div>
 
           {/* Down Arrow */}
