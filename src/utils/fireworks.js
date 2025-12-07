@@ -72,6 +72,7 @@ const Star = {
         instance.sparkLife = 750;
         instance.sparkLifeVariation = 0.25;
         instance.strobe = false;
+        instance.angle = angle; // Store angle for Crossette
         this.active[color].push(instance);
         return instance;
     },

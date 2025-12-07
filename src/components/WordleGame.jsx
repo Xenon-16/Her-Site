@@ -2,18 +2,40 @@ import React, { useState, useEffect, useRef } from 'react';
 import './WordleGame.css';
 import Confetti from '../Confetti';
 import boyChar from '../assets/boy_char.png';
+import boySmirk from '../assets/boy_smirk.png';
+import boySurprised from '../assets/boy_surprised.png';
+import boyHappy from '../assets/boy_happy.png';
 import girlChar from '../assets/girl_char.png';
+import girlSmirk from '../assets/girl_smirk.png';
+import girlWink from '../assets/girl_wink.png';
+import girlWorried from '../assets/girl_worried.png';
+import girlPouting from '../assets/girl_pouting.png';
+import girlConfident from '../assets/girl_confident.png';
 
 import { MOVIE_DATA } from '../data/teluguMovies';
 const CUSTOM_WORDS = [
-    "Naa Bonda", "Egg Pulls", "Nen call chestha", "Nen malla chestha", "Khathara", "Naa phone silent lo vunde", "Naa phone lo charging ledu",
+    "Naa Bonda", "Egg Pulls", "Nen call chestha", "Nen malla chestha", "Khathara ante", "Naa phone silent lo vunde", "Naa phone lo charging ledu",
     "Naa phone switch off aythadhi", "Mari intha kopama", "Nen emaina chesana", "Chai lo murkulu",
     "Life is like a cup of coffee its all in how you make it", "Nen baita vunna", "Nen bai kada vunna", "Nen maa oor potunna",
     "Chi po", "Baane", "ithadi ithadi ni pelli ithadi", "Nen chuskoled abba", "Ekkuva Cheyyaku", "Muskoni paduko",
     "Manchidi", "Adhi avvadhu amma"
 ];
 
+const CUSTOM_WORDS_BOY_REPLY = [
+    "Enti ??", "Curry Enti", "Adhi avvadhu amma", "Adhi avvadhu amma", "Khathara ledu", "Enni sarlu call cheshna", "Enni sarlu call cheshna",
+    "--", "--", "--", "Tiffin Enti ??",
+    "Ohhh", "Edaunnav ??", "Edaunnav ??", "Edaunnav ??",
+    "Mast cute vunnav", "Intha andhanga ela vunnav asalu", "he he he", "Super ra", "Uppal ostha", "mm",
+    "Nen cheppa", "Baitaki podham"
+];
 
+const CUSTOM_WORDS_HINTS = [
+    "Nee Ootha padam", "Curry", "Nuv cheppe sollu", "Nuv cheppe sollu", "Nannu chala sarlu dini meaning adigav", "Nen call enduk ethale ante em chepthav", "Nen call enduk ethale ante em chepthav",
+    "call matlade last lo chpthav ooke", "Nen arusthe okasari annav", "Pavan gadi intlo annav idhi", "Nak ardham kani me tiffin",
+    "Nak okasari motivation ki pettav", "Nen call chesthe ethi idhi cheppi cut chesthav", "Mee ooru lo vunte idhi chpthav", "Prathi rendu rojulaki nuv chese pani",
+    "Nen ekkuva pogidithe u say this", "Nen ekkuva pogidithe u say this", "Nen ekkuva chesthe u say this", "Nen saakulu", "Nen emaina chestha ante chalu", "night",
+    "good", "kaludham ante"
+];
 
 const MAX_LIVES = 7;
 
@@ -36,6 +58,8 @@ const WordleGame = ({ onBack }) => {
     // Character Messages State
     const [boyMessage, setBoyMessage] = useState("Let's play!");
     const [girlMessage, setGirlMessage] = useState("Good luck!");
+    const [girlImage, setGirlImage] = useState(girlChar);
+    const [boyImage, setBoyImage] = useState(boySmirk);
 
     // Sound Effects (placeholder, assuming actual implementation is elsewhere)
     const playSound = (type) => {
@@ -77,9 +101,10 @@ const WordleGame = ({ onBack }) => {
             wordObj = { ...randomMovie, type: 'MOVIE' };
         } else {
             // WORDS
-            const randomPhrase = CUSTOM_WORDS[Math.floor(Math.random() * CUSTOM_WORDS.length)];
+            const randomIndex = Math.floor(Math.random() * CUSTOM_WORDS.length);
+            const randomPhrase = CUSTOM_WORDS[randomIndex];
             wordStr = randomPhrase.toUpperCase();
-            wordObj = { type: 'PHRASE', text: randomPhrase };
+            wordObj = { type: 'PHRASE', text: randomPhrase, index: randomIndex };
         }
 
         setCategory(selectedCategory); // Ensure category is set
@@ -96,9 +121,14 @@ const WordleGame = ({ onBack }) => {
         if (wordObj && wordObj.type === 'MOVIE') {
             setBoyMessage("Nee valla kaadu le");
             setGirlMessage("Chi po ra");
+            setGirlImage(girlSmirk); // Start of game for movies: girl_smirk
+            setBoyImage(boySmirk); // Throughout game: boy_smirk
         } else {
-            setBoyMessage("Let's do this!");
-            setGirlMessage("I believe in you!");
+            // WORDS mode - same image logic as movies
+            setBoyMessage("Nee valla kaadu le");
+            setGirlMessage("Chi po ra");
+            setGirlImage(girlSmirk); // Start of game: girl_smirk
+            setBoyImage(boySmirk); // Throughout game: boy_smirk
         }
     };
 
@@ -115,10 +145,24 @@ const WordleGame = ({ onBack }) => {
             const allLettersGuessed = targetWord.split('').every(l => l === ' ' || newGuessed.has(l));
             if (allLettersGuessed) {
                 setGameStatus('won');
-                setBoyMessage("😑");
-                setGirlMessage("la la la la la....");
+                if (targetWordObj && targetWordObj.type === 'MOVIE') {
+                    setBoyImage(boySurprised); // MOVIE win: boy_surprised
+                    setGirlImage(girlConfident); // MOVIE win: girl_confident
+                    setBoyMessage("😑");
+                    setGirlMessage("la la la la la....");
+                } else if (targetWordObj && targetWordObj.type === 'PHRASE') {
+                    // Nee Maatalu win: boy_happy, girl_wink
+                    setBoyImage(boyHappy);
+                    setGirlImage(girlWink);
+                    const idx = targetWordObj.index;
+                    setBoyMessage(CUSTOM_WORDS_BOY_REPLY[idx] || "😑");
+                    setGirlMessage(targetWordObj.text);
+                }
             } else {
-                // Keep previous display message for correct guesses
+                // Correct guess but game continues
+                if (targetWordObj && (targetWordObj.type === 'MOVIE' || targetWordObj.type === 'PHRASE')) {
+                    setGirlImage(girlConfident); // Correctly guessed letter
+                }
             }
         } else {
             // Wrong guess
@@ -126,26 +170,64 @@ const WordleGame = ({ onBack }) => {
             setWrongGuesses(newWrong);
             if (newWrong >= MAX_LIVES) {
                 setGameStatus('lost');
-                setBoyMessage("He he he 😂");
-                setGirlMessage("Samputha ra ninnu 🔪");
+                if (targetWordObj && targetWordObj.type === 'MOVIE') {
+                    setBoyImage(boyHappy); // MOVIE loss: boy_happy
+                    setGirlImage(girlSmirk); // MOVIE loss: girl_smirk
+                    setBoyMessage("He he he 😂");
+                    setGirlMessage("Samputha ra ninnu 🔪");
+                } else if (targetWordObj && targetWordObj.type === 'PHRASE') {
+                    // Nee Maatalu loss: boy_happy, girl_wink
+                    setBoyImage(boyHappy);
+                    setGirlImage(girlWink);
+                    const idx = targetWordObj.index;
+                    setBoyMessage(CUSTOM_WORDS_BOY_REPLY[idx] || "He he he 😂");
+                    setGirlMessage(targetWordObj.text);
+                }
             } else {
                 // Determine hint based on remaining lives (MAX_LIVES - newWrong)
                 const livesLeft = MAX_LIVES - newWrong;
 
                 if (targetWordObj && targetWordObj.type === 'MOVIE') {
+                    // Set girl image based on lives left for movies - only change messages at hint points
                     if (livesLeft === 5) {
                         setBoyMessage(targetWordObj.hero);
                         setGirlMessage("Hint please 🥺");
-                    } else if (livesLeft === 4 || livesLeft === 3) {
+                        setGirlImage(girlWink); // 5 lives left: girl_wink
+                    } else if (livesLeft === 4) {
                         setBoyMessage(targetWordObj.heroine);
                         setGirlMessage(targetWordObj.hero + " 🤔");
+                        setGirlImage(girlWorried); // 4 lives left: girl_worried
+                    } else if (livesLeft === 3) {
+                        // Only change image, not messages
+                        setGirlImage(girlWink); // 3 lives left: girl_wink
                     } else if (livesLeft <= 2) {
-                        setBoyMessage(targetWordObj.plot); // might be long, check UI?
+                        setBoyMessage(targetWordObj.plot);
                         setGirlMessage(targetWordObj.hero + " & " + targetWordObj.heroine);
+                        setGirlImage(girlPouting); // 2 lives left: girl_pouting
                     } else {
-                        // Lives 6 (and 7 technically, but this is wrong guess)
-                        setBoyMessage("Nee valla kaadu le");
-                        setGirlMessage("Chi po ra");
+                        // Lives 6 - only change image, not messages
+                        setGirlImage(girlWink); // Wrong guess: girl_wink
+                    }
+                } else if (targetWordObj && targetWordObj.type === 'PHRASE') {
+                    // WORDS mode: only change messages at hint point (4 lives)
+                    const idx = targetWordObj.index;
+                    if (livesLeft === 5) {
+                        // Only change image
+                        setGirlImage(girlWink); // 5 lives left: girl_wink
+                    } else if (livesLeft === 4) {
+                        // Display hint at 4 lives - change messages here
+                        setBoyMessage(CUSTOM_WORDS_HINTS[idx] || "Hint...");
+                        setGirlMessage("mmm");
+                        setGirlImage(girlWorried); // 4 lives left: girl_worried
+                    } else if (livesLeft === 3) {
+                        // Only change image
+                        setGirlImage(girlWink); // 3 lives left: girl_wink
+                    } else if (livesLeft <= 2) {
+                        // Only change image
+                        setGirlImage(girlPouting); // 2 lives left: girl_pouting
+                    } else {
+                        // Lives 6 - only change image
+                        setGirlImage(girlWink); // Wrong guess: girl_wink
                     }
                 } else {
                     setBoyMessage("Ouch!");
@@ -163,12 +245,34 @@ const WordleGame = ({ onBack }) => {
 
         if (cleanInput === cleanTarget) {
             setGameStatus('won');
-            setBoyMessage("😑");
-            setGirlMessage("la la la la la....");
+            if (targetWordObj && targetWordObj.type === 'MOVIE') {
+                setBoyImage(boySurprised); // MOVIE win: boy_surprised
+                setGirlImage(girlConfident); // MOVIE win: girl_confident
+                setBoyMessage("😑");
+                setGirlMessage("la la la la la....");
+            } else if (targetWordObj && targetWordObj.type === 'PHRASE') {
+                // Nee Maatalu win: boy_happy, girl_wink
+                setBoyImage(boyHappy);
+                setGirlImage(girlWink);
+                const idx = targetWordObj.index;
+                setBoyMessage(CUSTOM_WORDS_BOY_REPLY[idx] || "😑");
+                setGirlMessage(targetWordObj.text);
+            }
         } else {
             setGameStatus('lost');
-            setBoyMessage("It was " + targetWord);
-            setGirlMessage("So close...");
+            if (targetWordObj && targetWordObj.type === 'MOVIE') {
+                setBoyImage(boyHappy); // MOVIE loss: boy_happy
+                setGirlImage(girlSmirk); // MOVIE loss: girl_smirk
+                setBoyMessage("It was " + targetWord);
+                setGirlMessage("So close...");
+            } else if (targetWordObj && targetWordObj.type === 'PHRASE') {
+                // Nee Maatalu loss: boy_happy, girl_wink
+                setBoyImage(boyHappy);
+                setGirlImage(girlWink);
+                const idx = targetWordObj.index;
+                setBoyMessage(CUSTOM_WORDS_BOY_REPLY[idx] || "It was " + targetWord);
+                setGirlMessage(targetWordObj.text);
+            }
         }
         setIsGuessingWord(false);
     };
@@ -179,8 +283,9 @@ const WordleGame = ({ onBack }) => {
             if (gameStatus !== 'playing' || showRules || isGuessingWord) return;
 
             const key = e.key.toUpperCase();
-            if (/^[A-Z]$/.test(key)) {
-                handleLetterGuess(key);
+            // Accept letters, numbers, and common special characters
+            if (/^[A-Z0-9!@#$%&?',.]$/.test(key) || /^[a-z0-9!@#$%&?',.]$/i.test(e.key)) {
+                handleLetterGuess(e.key.toUpperCase());
             }
         };
 
@@ -299,8 +404,8 @@ const WordleGame = ({ onBack }) => {
                     <div className="prompt-actions">
                         <button
                             className="action-btn yes-btn"
-                            style={{ backgroundColor: '#ccc', cursor: 'not-allowed' }}
-                            disabled
+                            style={{ backgroundColor: '#ff1493' }}
+                            onClick={() => startNewGame('WORDS')}
                         >
                             Nee Maatalu 💬
                         </button>
@@ -380,18 +485,18 @@ const WordleGame = ({ onBack }) => {
                             {/* Boy Character (Left) */}
                             <div className="character-wrapper left-char">
                                 <div className="speech-bubble">{getBoyMessage()}</div>
-                                <img src={boyChar} alt="Boy Character" className="character-img" />
+                                <img src={boyImage} alt="Boy Character" className="character-img" />
                             </div>
 
                             {/* Girl Character (Right) */}
                             <div className="character-wrapper right-char">
                                 <div className="speech-bubble">{getGirlMessage()}</div>
-                                <img src={girlChar} alt="Girl Character" className="character-img" />
+                                <img src={girlImage} alt="Girl Character" className="character-img" />
                             </div>
                         </div>
 
                         <div className="wordle-keyboard">
-                            {['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row, i) => (
+                            {['1234567890', 'QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM', "!@#$%&?',."].map((row, i) => (
                                 <div key={i} className="keyboard-row">
                                     {row.split('').map(char => (
                                         <button

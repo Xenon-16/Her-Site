@@ -16,7 +16,7 @@ function FireworksDisplay() {
         autoLaunch: true,
         finale: false,
         skyLighting: 'normal',
-        hideControls: false,
+        hideControls: true,
         longExposure: false,
         scaleFactor: 1.0
     });
@@ -31,6 +31,16 @@ function FireworksDisplay() {
 
     return (
         <div className="fireworks-wrapper">
+            <div className="sky-container">
+                <div className="sky">
+                    <div className="text">Happy Birthday Ra</div>
+                    <div className="stars">
+                        {[...Array(200)].map((_, i) => (
+                            <div key={i} className="star"></div>
+                        ))}
+                    </div>
+                </div>
+            </div>
             <div className={`loading-init ${isPlaying ? 'remove' : ''}`}>
                 <div className="loading-init__header">Loading</div>
                 <div className="loading-init__status">Assembling Shells</div>

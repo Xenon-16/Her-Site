@@ -292,13 +292,17 @@
 }
 
 .character-img {
-    height: 380px;
-    /* Increased size again */
+    height: 230px;
     width: auto;
     object-fit: contain;
-    /* filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2)); */
-    transition: transform 0.3s ease;
-    /* mix-blend-mode removed - using transparent PNGs */
+    opacity: 1;
+    filter: drop-shadow(0 4px 12px rgba(255, 20, 147, 0.15));
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.character-img:hover {
+    opacity: 1;
+    transform: scale(1.02);
 }
 
 .speech-bubble {
